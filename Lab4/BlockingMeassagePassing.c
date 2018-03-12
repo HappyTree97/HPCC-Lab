@@ -2,8 +2,8 @@
 #include <stdio.h>
 int main(int argc, char **argv)
 {
-    int numtasks, rank, dest, source, rc, count, tag = 1;
-    char inmsg, outmsg = ’x’;
+    int numtasks, rank, size ,dest, source, rc, count, tag = 1;
+    char inmsg, outmsg = 'x';
     MPI_Status Stat; // required variable for receive routines
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
