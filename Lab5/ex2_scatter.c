@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     int **sendRoot;
     int *recvRoot;
     int *recvClient;
-    int i = 0,j=0;
+    int i = 0;
     int sendRootCount = 0, recvRootCount = 0;
     int sendClientCount = 0, recvClientCount = 0;
     int global = 0, local = 0;
@@ -18,39 +18,41 @@ int main(int argc, char **argv)
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    sendRootCount = size;
+    
 
     if (n % size == 0)
         recvRootCount = n / size;
     else
         recvRootCount = n / size + 1;
+    sendRootCount = recvRootCount;
     
-    if (rank == 0)
+    if (rank = 0)
     {
-        sendRoot = malloc(sendRootCount * sizeof(int*));
-        for (i = 0; i<sendRootCount; i++)
-            sendRoot[i] = malloc(recvRootCount* sizeof(int));
-
-        for (i=0; i<sendRootCount; i++){
-            for(j=0; j<recvRootCount;j++){
-                if(i*sendRootCount+j<n)
-                    sendRoot[i][j] = i*sendRootCount+j;
-                else 
-                    sendRoot[i][j] =0;
-            }
+        t = sendRootCount * size;
+        sendRoot = malloc( * sizeof(int));
+        
+        for (i = 0; i < t; i++)
+        {
+            if (i < n)
+                sendRoot[i] = i;
+            else
+                sendRoot[i] = 0;
+            printf("%d, ", sendRoot[i]);
         }
+        
     }
 
-    MPI_Scatter(&sendRoot, sendRootCount, MPI_INT, &recvRoot, recvRootCount, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Scatter(sendRoot, sendRootCount, MPI_INT, recvRoot, recvRootCount, MPI_INT, 0, MPI_COMM_WORLD);
 
     for (i = 0; i < recvRootCount; i++)
     {
+        printf("Process [%d] recieved %d",rank,recvRoot[i])
         local += recvRoot[i];
     }
 
     printf("Local sum is %d ", local);
 
-    MPI_Gather(&local, 1, MPI_INT, &recvClient, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Gather(local, 1, MPI_INT, recvClient, 1, MPI_INT, 0, MPI_COMM_WORLD);
     if (rank == 0)
     {
         printf(sendRootCount);
