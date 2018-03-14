@@ -7,10 +7,10 @@ int main(int argc, char **argv)
     MPI_Status Stat; // required variable for receive routines
     int n = 30;
     int a;
-    int *sendRoot;
+    int **sendRoot;
     int *recvRoot;
     int *recvClient;
-    int i = 0;
+    int i = 0,j=0;
     int sendRootCount = 0, recvRootCount = 0;
     int sendClientCount = 0, recvClientCount = 0;
     int global = 0, local = 0;
@@ -18,29 +18,28 @@ int main(int argc, char **argv)
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+    sendRootCount = size;
 
     if (n % size == 0)
-        sendRootCount = n / size;
+        recvRootCount = n / size;
     else
-        sendRootCount = n / size + 1;
+        recvRootCount = n / size + 1;
+    
 
-    recvRootCount = sendRootCount;
-    
-    
     if (rank == 0)
-    	{
-	
-        int t = sendRootCount * size;
-	sendRoot = malloc(t * sizeof(int));
-        
-        for (i = 0; i < t; i++)
-        {
-            if (i < n)	
-                sendRoot[i] = i;
-            else
-                sendRoot[i] = 0;
+    {
+        sendRoot = malloc(sendRootCount * sizeof(int*));
+        for (i = 0; i<sendRootCount; i++)
+            sendRoot[i] = malloc(recvRootCount* sizeof(int));
+
+        for (i=0; i<sendRootCount; i++){
+            for(j=0; j<recvRootCount;j++){
+                if(i*sendRootCount+j<n)
+                    sendRoot[i][j] = i*sendRootCount+j;
+                else 
+                    sendRoot[i][j] =0;
+            }
         }
-        
     }
 
    
