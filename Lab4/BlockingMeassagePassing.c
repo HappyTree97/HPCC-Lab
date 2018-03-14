@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     }
     /* query receive Stat variable and print message details */
     MPI_Get_count(&Stat, MPI_CHAR, &count);
-    printf("Task %d: Receive %d char(s) [%d] from task %d with tag %d \n", rank,outmsg, count,
+    printf("Task %d: Receive %d char(s) [%d] from task %d with tag %d \n", rank,inmsg, count,
            Stat.MPI_SOURCE, Stat.MPI_TAG);
 
     /**/
