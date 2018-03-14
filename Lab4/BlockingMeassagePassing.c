@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     {
         dest = 1;
         source = 1;
-        
+        outmsg = '0';
         MPI_Send(&outmsg, 1, MPI_CHAR, dest, tag, MPI_COMM_WORLD);
         MPI_Recv(&inmsg, 1, MPI_CHAR, source, tag, MPI_COMM_WORLD, &Stat);
     }
@@ -22,12 +22,13 @@ int main(int argc, char **argv)
     {
         dest = 0;
         source = 0;
+        outmsg = '1';
         MPI_Recv(&inmsg, 1, MPI_CHAR, source, tag, MPI_COMM_WORLD, &Stat);
         MPI_Send(&outmsg, 1, MPI_CHAR, dest, tag, MPI_COMM_WORLD);
     }
     /* query receive Stat variable and print message details */
     MPI_Get_count(&Stat, MPI_CHAR, &count);
-    printf("Task %d: Receive %d char(s) from task %d with tag %d \n", rank, count,
+    printf("Task %d: Receive %d char(s) [%d] from task %d with tag %d \n", rank,outmsg, count,
            Stat.MPI_SOURCE, Stat.MPI_TAG);
 
     /**/
