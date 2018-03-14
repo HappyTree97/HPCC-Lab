@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-<<<<<<< HEAD
+
 
     if (n % size == 0)
         sendRootCount = n / size;
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
     recvRootCount = sendRootCount;
     
->>>>>>> 746ac9650629460b991bbd6a8b6ae6446cd91819
+
     if (rank = 0)
     {
         t = sendRootCount * size;
