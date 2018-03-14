@@ -28,8 +28,8 @@ int main(int argc, char **argv)
     
     if (rank = 0)
     {
-        t = sendRootCount * size;
-        sendRoot = malloc( * sizeof(int));
+        int t = sendRootCount * size;
+        sendRoot = malloc(t * sizeof(int));
         
         for (i = 0; i < t; i++)
         {
