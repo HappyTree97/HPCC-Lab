@@ -17,7 +17,8 @@ int main(int argc, char **argv)
     MPI_Reduce(&local,&global,1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);    
 
     if(rank ==0)
-        print("Sum is : %d", global)
+        printf("Sum is : %d", global);
+    MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
     return 0;
 }
