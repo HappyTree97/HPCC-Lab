@@ -5,50 +5,44 @@ int main(int argc, char **argv)
     int numtasks, rank, size, dest, source, rc, count, tag = 1;
 
     MPI_Status Stat; // required variable for receive routines
-    int n = 100;
+    int n = 30;
     int a;
     int *sendRoot;
     int *recvRoot;
-    int sendClient;
     int *recvClient;
     int i = 0;
     int sendRootCount = 0, recvRootCount = 0;
     int sendClientCount = 0, recvClientCount = 0;
+    int global = 0, local = 0;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    printf("Number of processes is %d",size)
-    // sendRootCount = n / size;
+
+    if (n % size == 0)
+        sendRootCount = n / size;
+    else
+        sendRootCount = n / size + 1;
+
+    recvRootCount = sendRootCount;
+    
     if (rank = 0)
     {
-        sendRootCount = recvRootCount = n / size;
-
-        if (n % size == 0)
+        t = sendRootCount * size;
+        sendRoot = malloc(t * sizeof(int));
+        
+        for (i = 0; i < t; i++)
         {
-            sendRoot = malloc(n * sizeof(int));
-            for (i = 0; i < n; i++)
-            {
+            if (i < n)
                 sendRoot[i] = i;
-            }
+            else
+                sendRoot[i] = 0;
         }
-        else
-        {
-            int t = (size + 1) * sendRootCount;
-            sendRoot = malloc(t * sizeof(int));
-            for (i = 0; i < t; i++)
-            {
-                if (i < n)
-                    sendRoot[i] = i;
-                else
-                    sendRoot[i] = 0;
-            }
-        }
+        printf("%d, ", sendRoot[i]);
     }
 
     MPI_Scatter(&sendRoot, sendRootCount, MPI_INT, &recvRoot, recvRootCount, MPI_INT, 0, MPI_COMM_WORLD);
 
-    int local = 0;
     for (i = 0; i < recvRootCount; i++)
     {
         local += recvRoot[i];
@@ -59,7 +53,6 @@ int main(int argc, char **argv)
     MPI_Gather(&local, 1, MPI_INT, &recvClient, 1, MPI_INT, 0, MPI_COMM_WORLD);
     if (rank == 0)
     {
-        int global = 0;
         printf(sendRootCount);
         for (i = 0; i < sendRootCount; i++)
         {
