@@ -1,5 +1,7 @@
 Git update version 1
-Git update version 2
+Git update version 2.0
+Git update version 2.1
+Git update version 2.2
 Git update version 3
 Git update version 4.1
 Git update version 4.2
@@ -8,6 +10,10 @@ Git update version 5
 Git update version 6
 Git update version 7
 Git update version 8
-Git update version 9
+Git update version 9.0
+Git update version 9.1
+Git update version 9.2
+Git update version 9.3
+Git update version 9.4
 Git update version 10
 
