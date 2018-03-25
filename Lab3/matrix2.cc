@@ -28,10 +28,14 @@ int main()
     // C = A x B
      
     double time = omp_get_wtime();
+    #pragma omp parallel for  
+    //#pragma omp simd
     for (int i = 0; i < n; i++)
     {
+	#pragma omp simd 
         for (int j = 0; j < n; j++)
         {
+	    //#pragma omp simd
             for (int k = 0; k < n; k++)
             {
                 C[i * n + j] += A[i * n + k] * B[k * n + j];

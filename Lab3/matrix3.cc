@@ -28,6 +28,7 @@ int main()
     // C = A x B
      
     double time = omp_get_wtime();
+    #pragma omp parallel for
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)

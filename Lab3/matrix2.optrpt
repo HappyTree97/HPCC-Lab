@@ -1,0 +1,288 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+Intel(R) C++ Intel(R) 64 Compiler for applications running on Intel(R) MIC Architecture, Version 17.0.4.196 Build 20170411
+
+Compiler options: -fopenmp -mmic -qopt-report=5
+
+    Report from: Interprocedural optimizations [ipo]
+
+  WHOLE PROGRAM (SAFE) [EITHER METHOD]: false
+  WHOLE PROGRAM (SEEN) [TABLE METHOD]: false
+  WHOLE PROGRAM (READ) [OBJECT READER METHOD]: false
+
+INLINING OPTION VALUES:
+  -inline-factor: 100
+  -inline-min-size: 30
+  -inline-max-size: 230
+  -inline-max-total-size: 2000
+  -inline-max-per-routine: 10000
+  -inline-max-per-compile: 500000
+
+In the inlining report below:
+   "sz" refers to the "size" of the routine. The smaller a routine's size,
+      the more likely it is to be inlined.
+   "isz" refers to the "inlined size" of the routine. This is the amount
+      the calling routine will grow if the called routine is inlined into it.
+      The compiler generally limits the amount a routine can grow by having
+      routines inlined into it.
+
+Begin optimization report for: main()
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (main()) [1/1=100.0%] matrix2.cc(6,1)
+  -> EXTERN: (10,27) malloc(size_t)
+  -> EXTERN: (11,27) malloc(size_t)
+  -> EXTERN: (12,27) malloc(size_t)
+  -> EXTERN: (14,5) printf(const char *, ...)
+  -> EXTERN: (30,19) omp_get_wtime()
+  -> EXTERN: (45,12) omp_get_wtime()
+  -> EXTERN: (47,5) printf(const char *, ...)
+  -> EXTERN: (54,9) printf(const char *, ...)
+  -> EXTERN: (56,9) printf(const char *, ...)
+  -> EXTERN: (58,5) printf(const char *, ...)
+
+
+    Report from: OpenMP optimizations [openmp]
+
+matrix2.cc(31:5-31:5):OMP:main:  OpenMP DEFINED LOOP WAS PARALLELIZED
+
+    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
+
+
+LOOP BEGIN at matrix2.cc(17,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+   remark #25018: Total number of lines prefetched=4
+   remark #25035: Number of pointer data prefetches=4, dist=8
+   remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(22,13) ]
+   remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(21,13) ]
+   remark #25015: Estimate of max trip count of loop=1000
+
+   LOOP BEGIN at matrix2.cc(19,9)
+   <Peeled loop for vectorization>
+      remark #15389: vectorization support: reference A[i*3000+j] has unaligned access   [ matrix2.cc(21,13) ]
+      remark #15389: vectorization support: reference B[i*3000+j] has unaligned access   [ matrix2.cc(22,13) ]
+      remark #15381: vectorization support: unaligned access used inside loop body
+      remark #15305: vectorization support: vector length 8
+      remark #15309: vectorization support: normalized vectorization overhead 0.300
+      remark #15301: PEEL LOOP WAS VECTORIZED
+      remark #25015: Estimate of max trip count of loop=3000000
+   LOOP END
+
+   LOOP BEGIN at matrix2.cc(19,9)
+      remark #15388: vectorization support: reference A[i*3000+j] has aligned access   [ matrix2.cc(21,13) ]
+      remark #15388: vectorization support: reference B[i*3000+j] has aligned access   [ matrix2.cc(22,13) ]
+      remark #15305: vectorization support: vector length 8
+      remark #15399: vectorization support: unroll factor set to 4
+      remark #15309: vectorization support: normalized vectorization overhead 0.103
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 62 
+      remark #15477: vector cost: 4.870 
+      remark #15478: estimated potential speedup: 12.530 
+      remark #15486: divides: 1 
+      remark #15487: type converts: 1 
+      remark #15488: --- end vector cost summary ---
+      remark #25018: Total number of lines prefetched=16
+      remark #25035: Number of pointer data prefetches=16, dist=8
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(21,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(22,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(21,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(22,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(21,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(22,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(21,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(22,13) ]
+      remark #25015: Estimate of max trip count of loop=583958528
+   LOOP END
+
+   LOOP BEGIN at matrix2.cc(19,9)
+   <Alternate Alignment Vectorized Loop>
+      remark #25018: Total number of lines prefetched=16
+      remark #25035: Number of pointer data prefetches=16, dist=8
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(21,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(22,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(21,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(22,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(21,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(22,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(21,13) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(22,13) ]
+      remark #25015: Estimate of max trip count of loop=583958528
+   LOOP END
+
+   LOOP BEGIN at matrix2.cc(19,9)
+   <Remainder loop for vectorization>
+      remark #15389: vectorization support: reference A[i*3000+j] has unaligned access   [ matrix2.cc(21,13) ]
+      remark #15388: vectorization support: reference B[i*3000+j] has aligned access   [ matrix2.cc(22,13) ]
+      remark #15389: vectorization support: reference A[i*3000+j] has unaligned access   [ matrix2.cc(21,13) ]
+      remark #15388: vectorization support: reference B[i*3000+j] has aligned access   [ matrix2.cc(22,13) ]
+      remark #15381: vectorization support: unaligned access used inside loop body
+      remark #15305: vectorization support: vector length 8
+      remark #15309: vectorization support: normalized vectorization overhead 0.180
+      remark #15301: REMAINDER LOOP WAS VECTORIZED
+      remark #25015: Estimate of max trip count of loop=1835577344
+   LOOP END
+LOOP END
+
+LOOP BEGIN at matrix2.cc(26,10)
+   remark #15389: vectorization support: reference C[$i1] has unaligned access
+   remark #15381: vectorization support: unaligned access used inside loop body
+   remark #15412: vectorization support: streaming store was generated for C[$i1]
+   remark #15305: vectorization support: vector length 8
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15451: unmasked unaligned unit stride stores: 1 
+   remark #15469: unmasked unaligned streaming stores: 1 
+   remark #15475: --- begin vector cost summary ---
+   remark #15476: scalar cost: 4 
+   remark #15477: vector cost: 0.620 
+   remark #15478: estimated potential speedup: 6.400 
+   remark #15488: --- end vector cost summary ---
+   remark #25018: Total number of lines prefetched=2
+   remark #25019: Number of spatial prefetches=2, dist=8
+   remark #25021: Number of initial-value prefetches=4
+   remark #25139: Using second-level distance 4 for prefetching spatial memory reference   [ matrix2.cc(26,10) ]
+   remark #25015: Estimate of max trip count of loop=1125000
+LOOP END
+
+LOOP BEGIN at matrix2.cc(49,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+   remark #25018: Total number of lines prefetched=2
+   remark #25035: Number of pointer data prefetches=2, dist=8
+   remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(51,69) ]
+   remark #25015: Estimate of max trip count of loop=1000
+
+   LOOP BEGIN at matrix2.cc(50,9)
+   <Peeled loop for vectorization>
+      remark #15389: vectorization support: reference C[i*3000+j] has unaligned access   [ matrix2.cc(51,22) ]
+      remark #15389: vectorization support: reference C[i*3000+j] has unaligned access   [ matrix2.cc(51,69) ]
+      remark #15381: vectorization support: unaligned access used inside loop body
+      remark #15305: vectorization support: vector length 8
+      remark #15309: vectorization support: normalized vectorization overhead 0.398
+      remark #15301: PEEL LOOP WAS VECTORIZED
+      remark #25015: Estimate of max trip count of loop=3000000
+   LOOP END
+
+   LOOP BEGIN at matrix2.cc(50,9)
+      remark #15388: vectorization support: reference C[i*3000+j] has aligned access   [ matrix2.cc(51,22) ]
+      remark #15388: vectorization support: reference C[i*3000+j] has aligned access   [ matrix2.cc(51,69) ]
+      remark #15305: vectorization support: vector length 8
+      remark #15399: vectorization support: unroll factor set to 4
+      remark #15309: vectorization support: normalized vectorization overhead 0.042
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 71 
+      remark #15477: vector cost: 10.500 
+      remark #15478: estimated potential speedup: 6.670 
+      remark #15486: divides: 2 
+      remark #15487: type converts: 2 
+      remark #15488: --- end vector cost summary ---
+      remark #25018: Total number of lines prefetched=8
+      remark #25035: Number of pointer data prefetches=8, dist=8
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(51,22) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(51,22) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(51,22) ]
+      remark #25141: Using second-level distance 2 for prefetching pointer data reference   [ matrix2.cc(51,22) ]
+      remark #25015: Estimate of max trip count of loop=583958528
+   LOOP END
+
+   LOOP BEGIN at matrix2.cc(50,9)
+   <Remainder loop for vectorization>
+      remark #15388: vectorization support: reference C[i*3000+j] has aligned access   [ matrix2.cc(51,22) ]
+      remark #15388: vectorization support: reference C[i*3000+j] has aligned access   [ matrix2.cc(51,69) ]
+      remark #15388: vectorization support: reference C[i*3000+j] has aligned access   [ matrix2.cc(51,22) ]
+      remark #15388: vectorization support: reference C[i*3000+j] has aligned access   [ matrix2.cc(51,69) ]
+      remark #15305: vectorization support: vector length 8
+      remark #15309: vectorization support: normalized vectorization overhead 0.254
+      remark #15301: REMAINDER LOOP WAS VECTORIZED
+      remark #25015: Estimate of max trip count of loop=1835577344
+   LOOP END
+LOOP END
+
+LOOP BEGIN at matrix2.cc(33,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at matrix2.cc(36,20)
+      remark #15389: vectorization support: reference C has unaligned access   [ matrix2.cc(41,17) ]
+      remark #15389: vectorization support: reference C has unaligned access   [ matrix2.cc(41,17) ]
+      remark #15389: vectorization support: reference B has unaligned access   [ matrix2.cc(41,48) ]
+      remark #15381: vectorization support: unaligned access used inside loop body
+      remark #15305: vectorization support: vector length 16
+      remark #15309: vectorization support: normalized vectorization overhead 0.182
+      remark #15301: OpenMP SIMD LOOP WAS VECTORIZED
+      remark #15450: unmasked unaligned unit stride loads: 2 
+      remark #15451: unmasked unaligned unit stride stores: 1 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 11 
+      remark #15477: vector cost: 2.060 
+      remark #15478: estimated potential speedup: 5.270 
+      remark #15488: --- end vector cost summary ---
+      remark #25015: Estimate of max trip count of loop=187
+
+      LOOP BEGIN at matrix2.cc(39,13)
+         remark #25018: Total number of lines prefetched=6
+         remark #25021: Number of initial-value prefetches=6
+         remark #25035: Number of pointer data prefetches=6, dist=8
+         remark #25141: Using second-level distance 4 for prefetching pointer data reference   [ matrix2.cc(41,33) ]
+         remark #25141: Using second-level distance 4 for prefetching pointer data reference   [ matrix2.cc(41,48) ]
+         remark #25141: Using second-level distance 4 for prefetching pointer data reference   [ matrix2.cc(41,48) ]
+         remark #25015: Estimate of max trip count of loop=3000
+      LOOP END
+   LOOP END
+
+   LOOP BEGIN at matrix2.cc(36,20)
+   <Remainder loop for vectorization>
+      remark #15389: vectorization support: reference C has unaligned access   [ matrix2.cc(41,17) ]
+      remark #15389: vectorization support: reference C has unaligned access   [ matrix2.cc(41,17) ]
+      remark #15389: vectorization support: reference B has unaligned access   [ matrix2.cc(41,48) ]
+      remark #15381: vectorization support: unaligned access used inside loop body
+      remark #15305: vectorization support: vector length 8
+      remark #15309: vectorization support: normalized vectorization overhead 0.286
+      remark #15301: REMAINDER LOOP WAS VECTORIZED
+      remark #25015: Estimate of max trip count of loop=1
+
+      LOOP BEGIN at matrix2.cc(39,13)
+         remark #25018: Total number of lines prefetched=4
+         remark #25021: Number of initial-value prefetches=5
+         remark #25035: Number of pointer data prefetches=4, dist=8
+         remark #25141: Using second-level distance 4 for prefetching pointer data reference   [ matrix2.cc(41,33) ]
+         remark #25141: Using second-level distance 4 for prefetching pointer data reference   [ matrix2.cc(41,48) ]
+         remark #25015: Estimate of max trip count of loop=3000
+      LOOP END
+   LOOP END
+LOOP END
+
+    Report from: Code generation optimizations [cg]
+
+matrix2.cc(6,1):remark #34051: REGISTER ALLOCATION : [main] matrix2.cc:6
+
+    Hardware registers
+        Reserved     :    2[ rsp rip]
+        Available    :   63[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm31 k0-k7]
+        Callee-save  :    6[ rbx rbp r12-r15]
+        Assigned     :   54[ rax rdx rcx rbx rsi rdi r8-r15 zmm0-zmm31 k0-k7]
+        
+    Routine temporaries
+        Total         :     800
+            Global    :     123
+            Local     :     677
+        Regenerable   :      87
+        Spilled       :      13
+        
+    Routine stack
+        Variables     :      64 bytes*
+            Reads     :      20 [1.80e+04 ~ 0.0%]
+            Writes    :      22 [1.80e+04 ~ 0.0%]
+        Spills        :     424 bytes*
+            Reads     :      28 [1.46e+02 ~ 0.0%]
+            Writes    :      23 [3.27e+01 ~ 0.0%]
+    
+    Notes
+    
+        *Non-overlapping variables and spills may share stack space,
+         so the total stack size might be less than this.
+    
+
+===========================================================================
