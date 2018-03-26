@@ -35,6 +35,7 @@ int main()
 	#pragma omp simd 
         for (int j = 0; j < n; j++)
         {
+
 	    //#pragma omp simd
             for (int k = 0; k < n; k++)
             {
