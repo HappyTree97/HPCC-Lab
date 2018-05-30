@@ -27,7 +27,7 @@ class Apriori
 {
   private:
     // largeItemSet counter;
-    rule rules;
+    vector<rule> rules;
     double suportThreshold;
     double confidenceThreshold;
     int supportCount;
@@ -39,14 +39,16 @@ class Apriori
     bool isSubSet(set<int> parent, set<int> child);
     void keepFrequentCandidates(largeItemSet &maybeC);
     void countSubsetSupport(set<int> &transaction, int transactionSize, int subsetSize, set<int>::iterator index, set<int> &helper, largeItemSet &maybeC);
-    int generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::iterator index, set<int> &result, int count);
+    void generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::iterator index, set<int> &result, int count);
 
   public:
+    
     Apriori(double suportThreshold, double confidenceThreshold);
     void readFile(string path);
     void doApriori();
     void generateStrongRule();
     void printListL();
+    int getNumberStrongRule();
 };
 
 Apriori::Apriori(double suportThreshold, double confidenceThreshold)
@@ -362,33 +364,30 @@ void Apriori::doApriori()
 void Apriori::generateStrongRule()
 {
     int ithItemset = 0;
-    int totalcount =0;
+
     for (auto largeItemsetIt = this->listL.begin(); largeItemsetIt != this->listL.end(); largeItemsetIt++)
     {
         int count = 0;
         ++ithItemset;
-        // Sinh Strong Association rule cho largeitem set thứ i
         for (auto itemIt = largeItemsetIt->count.begin(); itemIt != largeItemsetIt->count.end(); itemIt++)
         {
             for (int subsetSize = 1; subsetSize < itemIt->first.size(); subsetSize++)
             {
                 set<int> result;
-                count += generateRuleSubset(itemIt->first, subsetSize, itemIt->first.begin(), result, itemIt->second);
+                generateRuleSubset(itemIt->first, subsetSize, itemIt->first.begin(), result, itemIt->second);
             }
         }
-        totalcount+= count;
-        cout << "Number rule of " << ithItemset << " : " << count << endl;
+
     }
-    cout<< "Total rule : " << totalcount<<endl;
 }
 
-int Apriori::generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::iterator index, set<int> &result, int count)
+void Apriori::generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::iterator index, set<int> &result, int countItemset)
 {
     // Sinh ra được một tổ hợp mới
     if (subsetSize == 0)
     {
-        int leftSupport = listL[result.size() - 1].count[result];
-        double conf = count / leftSupport;
+        int countSubsetItemset = listL[result.size() - 1].count[result];
+        double conf = countItemset / countSubsetItemset;
         if (conf >= this->confidenceThreshold)
         {
             rule newRule;
@@ -398,20 +397,21 @@ int Apriori::generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::
                 if (newRule.left.find(*it) == newRule.left.end())
                 {
                     newRule.right.insert(*it);
+                    
                 }
             }
-            return 1;
+            this->rules.push_back(newRule);
         }
-        return 0;
+        return ;
     }
     int countSubsetRule = 0;
     for (set<int>::iterator it = index; it != sset.end(); ++it)
     {
         result.insert(*it);
-        countSubsetRule += generateRuleSubset(sset, subsetSize - 1, ++index, result, count);
+        generateRuleSubset(sset, subsetSize - 1, ++index, result, countItemset);
         result.erase(*it);
     }
-    return countSubsetRule;
+    return ;
 }
 void Apriori::printListL()
 {
@@ -419,6 +419,10 @@ void Apriori::printListL()
     {
         cout << "L_" << listL[i].size << ": " << listL[i].count.size() << endl;
     }
+}
+
+int Apriori::getNumberStrongRule(){
+    return this->rules.size();
 }
 int main(int argc, char **argv)
 {
@@ -443,7 +447,7 @@ int main(int argc, char **argv)
     t1 = clock();
     myAripori.generateStrongRule();
     t2 = clock();
-
+    cout<< "Number of strong rule : "<< myAripori.getNumberStrongRule();
     diff = ((double)t2 - (double)t1);
     seconds = diff / CLOCKS_PER_SEC;
     cout << "Strong rule generation time: ";
