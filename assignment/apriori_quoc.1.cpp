@@ -235,7 +235,7 @@ bool Apriori::isSubSet(set<int> parent, set<int> child)
 //     listL.push_back(C);
 // }
 
-int countCommbinations(int d, int k)
+int combinations(int d, int k)
 {
 
     if (k == 1)
@@ -251,32 +251,32 @@ int countCommbinations(int d, int k)
     {
         return 0;
     }
-    return countCommbinations(d - 1, k) + countCommbinations(d - 1, k - 1);
+    return combinations(d - 1, k) + combinations(d - 1, k - 1);
 }
 
-// find subsets of one transaction (transaction is stored in sset) with size "size" and increment their counters in candidate itemsets "maybeC" if exist.
-void Apriori::countSubsetSupport(set<int> &transaction, int transactionSize, int subsetSize, set<int>::iterator index, set<int> &helper, largeItemSet &maybeC)
+// find subsets of one transaction (transaction is stored in sset) with size "size" and increment their counters in candidate itemsets "c" if exist.
+void subset(set<int> &sset, int size, int left_size, set<int>::iterator index, set<int> &v, largeItemSet &c)
 {
-    if (transactionSize == 0)
+    if (left_size == 0)
     {
-        if (maybeC.count.count(helper) > 0)
+        if (c.count.count(v) > 0)
         {
-            maybeC.count[helper] += 1;
+            c.count[v] += 1;
         }
         return;
     }
-    for (set<int>::iterator it = index; it != transaction.end(); ++it)
+    for (set<int>::iterator it = index; it != sset.end(); ++it)
     {
-        helper.insert(*it);
-        countSubsetSupport(transaction, transactionSize, subsetSize - 1, ++index, helper, maybeC);
-        helper.erase(*it);
+        v.insert(*it);
+        subset(sset, size, left_size - 1, ++index, v, c);
+        v.erase(*it);
     }
     return;
 }
 
 // Go to each tracsaction and find subsets of size k and increment their counter in c. This algorithm is implemented in function subset().
 // If the number of candidates in c is less than the number of subsets of size k of one trasaction, then loop over each candidate itemset and check whether it is inside the transaction or not, then increment its counter if exists.
-void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
+void Apriori::keepFrequentCandidates(largeItemSet &c)
 {
 
     int temp_count;
@@ -291,12 +291,12 @@ void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
     {
         t_set = transactions[i];
 
-        if (t_set.size() >= maybeC.size)
+        if (t_set.size() >= c.size)
         {
-            if (maybeC.count.size() < countCommbinations(t_set.size(), maybeC.size))
+            if (c.count.size() < combinations(t_set.size(), c.size))
             {
 
-                for (auto it = maybeC.count.begin(); it != maybeC.count.end(); ++it)
+                for (auto it = c.count.begin(); it != c.count.end(); ++it)
                 {
                     temp_set = it->first;
 
@@ -313,23 +313,23 @@ void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
 
                     if (to_count)
                     {
-                        maybeC.count[temp_set] += 1;
+                        c.count[temp_set] += 1;
                     }
                 }
             }
             else
             {
-                countSubsetSupport(t_set, t_set.size(), maybeC.size, t_set.begin(), help_set, maybeC);
+                subset(t_set, t_set.size(), c.size, t_set.begin(), help_set, c);
             }
         }
     }
 
     largeItemSet l_new;
-    l_new.size = maybeC.size;
+    l_new.size = c.size;
 
     // Copy frequent items into l_new.
     int count;
-    for (auto it = maybeC.count.begin(); it != maybeC.count.end(); ++it)
+    for (auto it = c.count.begin(); it != c.count.end(); ++it)
     {
         help_set = it->first;
         count = it->second;
@@ -339,7 +339,8 @@ void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
         }
     }
 
-    maybeC.count.clear();
+    c.count.clear();
+
     listL.push_back(l_new);
 
     return;
@@ -358,13 +359,58 @@ void Apriori::doApriori()
     }
     listL.pop_back();
 }
+void Apriori::generateStrongRule()
+{
+    int ithItemset = 0;
+    for (auto largeItemsetIt = this->listL.begin(); largeItemsetIt != this->listL.end(); largeItemsetIt++)
+    {
+        int count = 0;
+        ++ithItemset;
+        // Sinh Strong Association rule cho largeitem set thứ i
+        for (auto itemIt = largeItemsetIt->count.begin(); itemIt != largeItemsetIt->count.end(); itemIt++)
+        {
+            for (int subsetSize = 1; subsetSize < itemIt->first.size(); subsetSize++)
+            {
+                set<int> result;
+                count += generateRuleSubset(itemIt->first, subsetSize, itemIt->first.begin(), result, itemIt->second);
+            }
+        }
+        cout << "Number rule of " << ithItemset << " : " << count << endl;
+    }
+}
 
-
-
-
+int Apriori::generateRuleSubset(const set<int> &sset, int left_size, set<int>::iterator index, set<int> &result, int count)
+{
+    // Sinh ra được một tổ hợp mới
+    if (left_size == 0)
+    {
+        int leftSupport = listL[result.size() - 1].count[result];
+        double conf = count / leftSupport;
+        if (conf >= this->confidenceThreshold)
+        {
+            rule newRule;
+            newRule.left = result;
+            for (auto it = sset.begin(); it != sset.end(); it++)
+            {
+                if (newRule.left.find(*it) == newRule.left.end())
+                {
+                    newRule.right.insert(*it);
+                }
+            }
+        }
+        return 1;
+    }
+    int countSubsetRule = 0;
+    for (set<int>::iterator it = index; it != sset.end(); ++it)
+    {
+        result.insert(*it);
+        countSubsetRule += generateRuleSubset(sset, left_size - 1, ++index, result, count);
+        result.erase(*it);
+    }
+    return countSubsetRule;
+}
 void Apriori::printListL()
 {
-    cout<<"Number of large itemset : " << listL.size() <<endl;
     for (int i = 0; i < listL.size(); i++)
     {
         cout << "L_" << listL[i].size << ": " << listL[i].count.size() << endl;
@@ -380,7 +426,6 @@ int main(int argc, char **argv)
     myAripori.readFile(path);
     t1 = clock();
     myAripori.doApriori();
-//    myAripori.generateStrongRule();
     t2 = clock();
 
     myAripori.printListL();
