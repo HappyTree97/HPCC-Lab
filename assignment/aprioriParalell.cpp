@@ -43,7 +43,6 @@ class Apriori
     void generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::iterator index, set<int> &result, int count);
 
   public:
-    
     Apriori(double suportThreshold, double confidenceThreshold);
     void readFile(string path);
     void doApriori();
@@ -290,41 +289,46 @@ void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
     set<int> t_set;
     set<int> help_set;
 
-    // when all transactions are in main memory.
-    #pragma omp paralell for 
-    for (int i = 0; i < transactions.size(); i++)
+// when all transactions are in main memory.
+#pragma omp paralell 
     {
-        t_set = transactions[i];
+        int number_thread = omp_get_num_threads();
+        int thread_id = omp_get_thread_num();
 
-        if (t_set.size() >= maybeC.size)
+        for (int i = thread_id; i < transactions.size(); i+=number_thread)
         {
-            if (maybeC.count.size() < combinations(t_set.size(), maybeC.size))
+            t_set = transactions[i];
+
+            if (t_set.size() >= maybeC.size)
             {
-
-                for (auto it = maybeC.count.begin(); it != maybeC.count.end(); ++it)
+                if (maybeC.count.size() < combinations(t_set.size(), maybeC.size))
                 {
-                    temp_set = it->first;
 
-                    to_count = true;
-
-                    for (auto itt = temp_set.begin(); itt != temp_set.end(); ++itt)
+                    for (auto it = maybeC.count.begin(); it != maybeC.count.end(); ++it)
                     {
-                        if (t_set.count(*itt) == 0)
+                        temp_set = it->first;
+
+                        to_count = true;
+
+                        for (auto itt = temp_set.begin(); itt != temp_set.end(); ++itt)
                         {
-                            to_count = false;
-                            break;
+                            if (t_set.count(*itt) == 0)
+                            {
+                                to_count = false;
+                                break;
+                            }
+                        }
+
+                        if (to_count)
+                        {
+                            maybeC.count[temp_set] += 1;
                         }
                     }
-
-                    if (to_count)
-                    {
-                        maybeC.count[temp_set] += 1;
-                    }
                 }
-            }
-            else
-            {
-                subset(t_set, t_set.size(), maybeC.size, t_set.begin(), help_set, maybeC);
+                else
+                {
+                    subset(t_set, t_set.size(), maybeC.size, t_set.begin(), help_set, maybeC);
+                }
             }
         }
     }
@@ -380,7 +384,6 @@ void Apriori::generateStrongRule()
                 generateRuleSubset(itemIt->first, subsetSize, itemIt->first.begin(), result, itemIt->second);
             }
         }
-
     }
 }
 
@@ -389,9 +392,9 @@ void Apriori::generateRuleSubset(const set<int> &largeItemSet, int subsetSize, s
     // Sinh ra được một tổ hợp mới
     if (subsetSize == 0)
     {
-        
+
         int countSubsetItemset = listL[result.size() - 1].count[result];
-        double conf = (double)countItemset / (double) countSubsetItemset;
+        double conf = (double)countItemset / (double)countSubsetItemset;
         if (conf >= this->confidenceThreshold)
         {
             rule newRule;
@@ -400,12 +403,12 @@ void Apriori::generateRuleSubset(const set<int> &largeItemSet, int subsetSize, s
             {
                 if (newRule.left.find(*it) == newRule.left.end())
                 {
-                    newRule.right.insert(*it);   
+                    newRule.right.insert(*it);
                 }
             }
             this->rules.push_back(newRule);
         }
-        return ;
+        return;
     }
     for (set<int>::iterator it = index; it != largeItemSet.end(); ++it)
     {
@@ -413,7 +416,7 @@ void Apriori::generateRuleSubset(const set<int> &largeItemSet, int subsetSize, s
         generateRuleSubset(largeItemSet, subsetSize - 1, ++index, result, countItemset);
         result.erase(*it);
     }
-    return ;
+    return;
 }
 void Apriori::printListL()
 {
@@ -423,28 +426,31 @@ void Apriori::printListL()
     }
 }
 
-int Apriori::getNumberStrongRule(){
+int Apriori::getNumberStrongRule()
+{
     return this->rules.size();
 }
 
-void Apriori::exportSuportFile(string outputFileName){
+void Apriori::exportSuportFile(string outputFileName)
+{
     ofstream outfile;
     outfile.open(outputFileName);
-    
-    for(auto it = this->listL.begin(); it != this->listL.end() ; it++)
+
+    for (auto it = this->listL.begin(); it != this->listL.end(); it++)
     {
-        for(auto it2 = it->count.begin(); it2 !=it->count.end(); it2++){
+        for (auto it2 = it->count.begin(); it2 != it->count.end(); it2++)
+        {
             string line = "( ";
-            for(auto it3 = it2->first.begin(); it3 != it2->first.end(); it3++ ){
+            for (auto it3 = it2->first.begin(); it3 != it2->first.end(); it3++)
+            {
                 line += to_string(*it3) + " ";
             }
             line += " ) : " + to_string(it2->second);
-            outfile<< line <<endl;
+            outfile << line << endl;
         }
     }
 
     outfile.close();
-    
 }
 int main(int argc, char **argv)
 {
@@ -467,11 +473,10 @@ int main(int argc, char **argv)
     cout << " seconds" << endl;
     myAripori.exportSuportFile("suport.txt");
 
-
     t1 = clock();
     myAripori.generateStrongRule();
     t2 = clock();
-    cout<< "Number of strong rule : "<< myAripori.getNumberStrongRule() <<endl;
+    cout << "Number of strong rule : " << myAripori.getNumberStrongRule() << endl;
     diff = ((double)t2 - (double)t1);
     seconds = diff / CLOCKS_PER_SEC;
     cout << "Strong rule generation time: ";
