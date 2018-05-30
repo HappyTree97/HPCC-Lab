@@ -435,9 +435,9 @@ void Apriori::exportSuportFile(string outputFileName){
         for(auto it2 = it->count.begin(); it2 !=it->count.end(); it2++){
             string line = "";
             for(auto it3 = it2->first.begin(); it3 != it2->first.end(); it3++ ){
-                line += *it3 + " ";
+                line += to_string(*it3) + " ";
             }
-            line += it2->second;
+            line += to_string(it2->second);
             outfile<< line <<endl;
         }
     }
