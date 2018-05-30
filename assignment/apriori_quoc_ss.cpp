@@ -195,7 +195,11 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
                     }
 
                     if(to_gennerate){
-                        newCset.insert(itemset);
+                        #pragma omp critial
+                        {
+                            newCset.insert(itemset);
+                        }
+                        
                     }
                     itemset.erase(item);
                 }
