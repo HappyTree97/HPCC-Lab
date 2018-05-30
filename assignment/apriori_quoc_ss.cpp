@@ -205,7 +205,7 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
                 }
             }
         }
-        cout<< "Thread "<<omp_get_thread_num()<< "runing in : " << omp_get_wtime() - t1 << endl;
+        // cout<< "Thread "<<omp_get_thread_num()<< "runing in : " << omp_get_wtime() - t1 << endl;
     }
 
     for(auto i = newCset.begin(); i!=newCset.end();i++ ){
