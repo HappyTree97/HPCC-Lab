@@ -43,7 +43,6 @@ class Apriori
     void generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::iterator index, set<int> &result, int count);
 
   public:
-    
     Apriori(double suportThreshold, double confidenceThreshold);
     void readFile(string path);
     void doApriori();
@@ -363,7 +362,7 @@ void Apriori::doApriori()
         newC = generateCandidates(preL);
         keepFrequentCandidates(newC);
         preL = listL.back();
-        cout<< "Execution time itemset " << countLargeset << " : "<<omp_get_wtime() - t1;
+        cout << "Execution time itemset " << countLargeset << " : " << omp_get_wtime() - t1;
     }
     listL.pop_back();
 }
@@ -383,7 +382,6 @@ void Apriori::generateStrongRule()
                 generateRuleSubset(itemIt->first, subsetSize, itemIt->first.begin(), result, itemIt->second);
             }
         }
-
     }
 }
 
@@ -392,9 +390,9 @@ void Apriori::generateRuleSubset(const set<int> &largeItemSet, int subsetSize, s
     // Sinh ra được một tổ hợp mới
     if (subsetSize == 0)
     {
-        
+
         int countSubsetItemset = listL[result.size() - 1].count[result];
-        double conf = (double)countItemset / (double) countSubsetItemset;
+        double conf = (double)countItemset / (double)countSubsetItemset;
         if (conf >= this->confidenceThreshold)
         {
             rule newRule;
@@ -403,12 +401,12 @@ void Apriori::generateRuleSubset(const set<int> &largeItemSet, int subsetSize, s
             {
                 if (newRule.left.find(*it) == newRule.left.end())
                 {
-                    newRule.right.insert(*it);   
+                    newRule.right.insert(*it);
                 }
             }
             this->rules.push_back(newRule);
         }
-        return ;
+        return;
     }
     for (set<int>::iterator it = index; it != largeItemSet.end(); ++it)
     {
@@ -416,7 +414,7 @@ void Apriori::generateRuleSubset(const set<int> &largeItemSet, int subsetSize, s
         generateRuleSubset(largeItemSet, subsetSize - 1, ++index, result, countItemset);
         result.erase(*it);
     }
-    return ;
+    return;
 }
 void Apriori::printListL()
 {
@@ -426,32 +424,35 @@ void Apriori::printListL()
     }
 }
 
-int Apriori::getNumberStrongRule(){
+int Apriori::getNumberStrongRule()
+{
     return this->rules.size();
 }
 
-void Apriori::exportSuportFile(string outputFileName){
+void Apriori::exportSuportFile(string outputFileName)
+{
     ofstream outfile;
     outfile.open(outputFileName);
-    
-    for(auto it = this->listL.begin(); it != this->listL.end() ; it++)
+
+    for (auto it = this->listL.begin(); it != this->listL.end(); it++)
     {
-        for(auto it2 = it->count.begin(); it2 !=it->count.end(); it2++){
+        for (auto it2 = it->count.begin(); it2 != it->count.end(); it2++)
+        {
             string line = "( ";
-            for(auto it3 = it2->first.begin(); it3 != it2->first.end(); it3++ ){
+            for (auto it3 = it2->first.begin(); it3 != it2->first.end(); it3++)
+            {
                 line += to_string(*it3) + " ";
             }
             line += " ) : " + to_string(it2->second);
-            outfile<< line <<endl;
+            outfile << line << endl;
         }
     }
 
     outfile.close();
-    
 }
 int main(int argc, char **argv)
 {
-    clock_t t1, t2, t3;
+    clock_t t1, t2, t3, t4, t5;
     string path = argv[1];
     double sp = atof(argv[2]);
     double cf = atof(argv[3]);
@@ -459,28 +460,20 @@ int main(int argc, char **argv)
     t1 = omp_get_wtime();
     myAripori.readFile(path);
 
-
     t2 = omp_get_wtime();
     myAripori.doApriori();
     t3 = omp_get_wtime();
 
     myAripori.printListL();
 
-    
-    cout << "Readfile time : " << t2 - t1 <<endl;
-    cout << "doApriori time : " << t3 - t2 <<endl;
+    cout << "Readfile time : " << t2 - t1 << endl;
+    cout << "doApriori time : " << t3 - t2 << endl;
 
-    
     myAripori.exportSuportFile("suport.txt");
 
-
-    t1 = clock();
+    t4 = clock();
     myAripori.generateStrongRule();
-    t2 = clock();
-    cout<< "Number of strong rule : "<< myAripori.getNumberStrongRule() <<endl;
-    diff = ((double)t2 - (double)t1);
-    seconds = diff / CLOCKS_PER_SEC;
-    cout << "Strong rule generation time: ";
-    cout << round(seconds);
-    cout << " seconds" << endl;
+    t5 = clock();
+    cout << "Number of strong rule : " << myAripori.getNumberStrongRule() << endl;
+    cout << "Generate Rule time : " << t5 - t4 << endl;
 }
