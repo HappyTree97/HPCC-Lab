@@ -432,7 +432,17 @@ int main(int argc, char **argv)
 
     double diff = ((double)t2 - (double)t1);
     double seconds = diff / CLOCKS_PER_SEC;
-    cout << "Execution time: ";
+    cout << "Large Itemset generation time: ";
+    cout << round(seconds);
+    cout << " seconds" << endl;
+
+    t1 = clock();
+    myAripori.generateStrongRule();
+    t2 = clock();
+
+    double diff = ((double)t2 - (double)t1);
+    double seconds = diff / CLOCKS_PER_SEC;
+    cout << "Strong rule generation time: ";
     cout << round(seconds);
     cout << " seconds" << endl;
 }
