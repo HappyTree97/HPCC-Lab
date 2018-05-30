@@ -184,10 +184,11 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     // int thread_id = omp_get_thread_num();
     // #pragma omp parallel for private(itemset_vec, item, to_gennerate, temp )
     for(int i=0; i<preLvec.size(); i++){
+        cout<<"Break Point 1\n";
         itemset_vec = preLvec[i];
         for(int j = 0; j <list_item_vec.size(); ++j){
             if(i==2){
-                cout<<"Break Point 1\n";
+                cout<<"Break Point 2\n";
             }
             item = list_item_vec[j];
             if(find(itemset_vec, item)==-1 ){
