@@ -400,8 +400,9 @@ int Apriori::generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::
                     newRule.right.insert(*it);
                 }
             }
+            return 1;
         }
-        return 1;
+        return 0;
     }
     int countSubsetRule = 0;
     for (set<int>::iterator it = index; it != sset.end(); ++it)
