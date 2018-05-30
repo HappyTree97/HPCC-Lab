@@ -194,8 +194,9 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
                     for(int t =0; t< itemset_vec.size(); t++){
                         cout<< itemset_vec[t] << " ";
                     }
+                    cout<<endl;
                 }
-                cout<<endl;
+                
                 insert(itemset_vec, item);
                 // if(i==0&&j==0){
                 //     for(int t =0; t< itemset_vec.size(); t++){
