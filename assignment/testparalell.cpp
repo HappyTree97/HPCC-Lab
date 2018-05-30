@@ -239,16 +239,17 @@ void generate_candidates(lk &new_c, lk &previous_l){
 	set<int> temp;
 	set<int> items_to_check;
 	
-	 
-	
-	
-	
+	#pragma omp parallel 
+	{
 	for (auto it = previous_l.counter.begin(); it!= previous_l.counter.end(); ++it){
+	#pragma omp single nowait
+        {
+
         temp = it->first;
 	    items_to_check.insert(temp.begin(),temp.end());
     }
-	
-	
+	}
+	}
 	for (auto it_i = previous_l.counter.begin(); it_i != previous_l.counter.end(); ++it_i){
 
         temp_i = it_i->first;

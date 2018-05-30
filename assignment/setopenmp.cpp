@@ -6,17 +6,17 @@ using namespace std;
 
 int main(){
     set<int> mSet;
-    int N =1000000;
+    int N =50000000;
 
     clock_t t1,t2;
-    for(int i = 1; i< n; i++){
+    for(int i = 1; i< N; i++){
         mSet.insert(i+1);
     }
     int temp;
     t1 = clock();
     
-    for (auto it = mSet.begin(); it!= mSet.end(); it++){
-        if(temp%2==0) temp+=2;
+    for (auto it = mSet.begin(); it!= mSet.end(); it++2){
+        if(*it%2==0) temp+=2;
         else temp++;
     }
 
@@ -24,6 +24,6 @@ int main(){
     double diff = ((double)t2 - (double)t1);
     double seconds = diff / CLOCKS_PER_SEC;
     cout << "Execution time: ";
-    cout << round(seconds);
+    cout << seconds <<endl ;
 
 }

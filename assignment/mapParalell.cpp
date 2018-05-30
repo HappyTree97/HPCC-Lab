@@ -56,7 +56,7 @@ int main(int argc, char **argv){
     string path = argv[1];
     readFile(path);
     t1=omp_get_wtime( );  
-    #pragma omp paralell for
+    #pragma omp parallel for
     for(it = transactions.begin(); it!=transactions.end(); it++){
         if(frequent.find(it->second) == frequent.end()){
             frequent[it->second] = 1;

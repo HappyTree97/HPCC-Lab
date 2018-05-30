@@ -20,6 +20,7 @@
 #include <map>
 #include <unordered_map>
 #include <algorithm>
+#include <time.h>
 using namespace std;
 
 /*
@@ -481,24 +482,28 @@ bool isSubset(const vector<int> &A, const vector<int> &B)
 int main(int argc, char **argv)
 {
     string nameFile = argv[1];
+    double minSupport = atof(argv[2]);
+    double minConfidence = atof(argv[3]);
     cout << nameFile << endl;
-    Aripori *aripori = new Aripori(0.01, 0.01);
+    Aripori *aripori = new Aripori(minSupport,minConfidence);
     aripori->readFile(nameFile);
-
-    int arr[] = {1, 2};
-    vector<int> a(arr, arr + 2);
-    itemset item;
-    item.items = a;
+    clock_t t1 = clock();
+    
     // cout<<"\n Test : "<<aripori->getSupport(a)<< endl;
 
     aripori->doAripori();
 
     // cout<<"\n Test : "<<aripori->getSupport(a);
-    aripori->printLargeItemset();
+    //aripori->printLargeItemset();
     aripori->generateARule();
 
     aripori->printAssociationRule();
-
+    clock_t t2 = clock();
+    double diff=((double)t2-(double)t1);
+    double seconds = diff / CLOCKS_PER_SEC;
+    cout<<"\nResult files were created!"<<endl;
+    cout<<"Execution time: ";
+    cout<<seconds;
     // aripori->printTransaction();
 
     return 0;
