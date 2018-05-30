@@ -163,7 +163,6 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     vector<vector<int>> preLvec;
     set<vector<int>> newCset;
 
-
     for(auto i = preL.count.begin(); i != preL.count.end(); ++i){
         itemset = i->first;    
         list_item.insert(itemset.begin(), itemset.end()); 
