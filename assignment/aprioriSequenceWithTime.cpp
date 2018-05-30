@@ -218,29 +218,6 @@ bool Apriori::isSubSet(set<int> parent, set<int> child)
     return true;
 }
 
-// void Apriori::keepFrequentCandidates(largeItemSet &C){
-//     for(auto it = C.count.begin(); it != C.count.end(); ++it){
-//         set<int> itemset = it->first;
-//         int count = 0;
-//         bool flag = false;
-//         for(int i =0; i<transactions.size(); i++){//sua
-//             if(isSubSet(transactions[i], itemset)){
-//                 count++;
-//             }
-//             if(count >= this->supportCount){//trinh sua lai
-//                 flag = true;
-//             }
-//         }
-//         //cout << count << endl;
-//         if(flag == true){
-//             it->second = count;
-//         }
-//         else{
-//             C.count.erase(itemset);
-//         }
-//     }
-//     listL.push_back(C);
-// }
 
 int combinations(int d, int k)
 {
