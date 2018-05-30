@@ -177,7 +177,7 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
         list_item_vec.push_back(*i);
     }
     
-    cout<<preLvec.size()<<endl;
+    cout<<preLvec[2][0]<<endl;
     // #pragma omp parallel private(itemset,temp,to_gennerate,item) reduction(add: newCset)
     // int num_thread = omp_get_num_threads(); 
     // int thread_id = omp_get_thread_num();
