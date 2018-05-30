@@ -362,6 +362,7 @@ void Apriori::doApriori()
 void Apriori::generateStrongRule()
 {
     int ithItemset = 0;
+    int totalcount =0;
     for (auto largeItemsetIt = this->listL.begin(); largeItemsetIt != this->listL.end(); largeItemsetIt++)
     {
         int count = 0;
@@ -375,8 +376,10 @@ void Apriori::generateStrongRule()
                 count += generateRuleSubset(itemIt->first, subsetSize, itemIt->first.begin(), result, itemIt->second);
             }
         }
+        totalcount+= count;
         cout << "Number rule of " << ithItemset << " : " << count << endl;
     }
+    cout<< "Total rule : " << totalcount<<endl;
 }
 
 int Apriori::generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::iterator index, set<int> &result, int count)
