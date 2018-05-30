@@ -360,9 +360,10 @@ void Apriori::doApriori()
         ++countLargeset;
         double t1 = omp_get_wtime();
         newC = generateCandidates(preL);
+        double t2 = omp_get_wtime();
         keepFrequentCandidates(newC);
         preL = listL.back();
-        cout << "Execution time itemset " << countLargeset << " : " << omp_get_wtime() - t1 <<endl;
+        cout << "Itemset " << countLargeset << " - generateC time : "<< t2-t1 << " Update support time : " << omp_get_wtime() - t2 <<endl;
     }
     listL.pop_back();
 }
