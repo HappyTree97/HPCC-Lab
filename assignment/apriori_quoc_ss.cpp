@@ -186,9 +186,10 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     for(int i=0; i<preLvec.size(); i++){
         cout<<"Break Point 1\n";
         itemset_vec = preLvec[i];
+        cout<<"Break Point 2\n";
         for(int j = 0; j <list_item_vec.size(); ++j){
             if(i==2){
-                cout<<"Break Point 2\n";
+                cout<<"Break Point 3\n";
             }
             item = list_item_vec[j];
             if(find(itemset_vec, item)==-1 ){
