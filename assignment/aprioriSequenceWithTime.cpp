@@ -160,13 +160,15 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL)
     set<int> temp;
     int item;
     bool to_gennerate;
-
+    // list_item = pre.L
+    double t1 = omp_get_wtime();
     for (auto i = preL.count.begin(); i != preL.count.end(); ++i)
     {
         itemset = i->first;
         list_item.insert(itemset.begin(), itemset.end());
     }
-
+    cout << "list_item time : " << omp_get_wtime() - t1;
+    t1 = omp_get_wtime();
     for (auto i = preL.count.begin(); i != preL.count.end(); ++i)
     {
         itemset = i->first;
@@ -199,6 +201,8 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL)
             }
         }
     }
+    cout << ", newC time : " << omp_get_wtime() - t1 << endl;
+    t1 = omp_get_wtime();
     return newC;
 }
 
@@ -363,7 +367,7 @@ void Apriori::doApriori()
         double t2 = omp_get_wtime();
         keepFrequentCandidates(newC);
         preL = listL.back();
-        cout << "Itemset " << countLargeset << " - generateC time : "<< t2-t1 << " Update support time : " << omp_get_wtime() - t2 <<endl;
+        cout << "Itemset " << countLargeset << " - generateC time : " << t2 - t1 << ". Update support time : " << omp_get_wtime() - t2 << endl;
     }
     listL.pop_back();
 }
