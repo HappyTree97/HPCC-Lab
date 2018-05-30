@@ -148,20 +148,25 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
 
     set<int> list_item;
     vector<int> list_item_vec;
-    
+    vector<int> itemset_vec;
+
     set<int> itemset;
-    set<int> temp;
+    vector<int> temp;
     int item;
     bool to_gennerate;
 
-    vector<set<int>> preLvec;
-    set<set<int>> newCset;
+    vector<vector<int>> preLvec;
+    set<vector<int>> newCset;
 
 
     for(auto i = preL.count.begin(); i != preL.count.end(); ++i){
         itemset = i->first;    
-        list_item.insert(itemset.begin(), itemset.end());    
-        preLvec.push_back(itemset);
+        list_item.insert(itemset.begin(), itemset.end()); 
+        vector<int >itemsetVec   ;
+        for(auto j = itemset.begin();j!= itemset.end(); j++){
+            itemsetVec.push_back(*j);
+        }
+        preLvec.push_back(itemsetVec);
     }
 
     for(auto i = list_item.begin(); i != list_item.end(); ++i){
@@ -170,36 +175,33 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     
 
     // #pragma omp parallel private(itemset,temp,to_gennerate,item) reduction(add: newCset)
-    #pragma omp parallel private(itemset,temp,to_gennerate,item) 
+    #pragma omp parallel for 
     {
         double t1 = omp_get_wtime();
         int num_thread = omp_get_num_threads(); 
         int thread_id = omp_get_thread_num(); 
         for(int i=thread_id; i<preLvec.size(); i+=num_thread){
-            itemset = preLvec[i];
+            itemset_vec = preLvec[i];
             for(int j = 0; j <list_item_vec.size(); ++j){
                 item = list_item_vec[j];
-                if(itemset.count(item)==0){
-                    itemset.insert(item);
+                if(!find(itemset_vec, item) ){
+                    insert(itemset_vec, item);
                     to_gennerate = true;
-                    if(newCset.count(itemset)==0){
-                        temp = itemset;
-                        for(auto k = itemset.begin(); k != itemset.end(); ++k){
-                            temp.erase(*k);
-                            if(preL.count.count(temp)==0){
+                    if(newCset.count(itemset_vec)==0){
+                        temp = itemset_vec;
+                        for(int k = 0; k != itemset_vec.size() ; ++k){
+                            temp.erase(temp.begin()+k);
+                            if(!find(preLvec, temp)){
                                 to_gennerate = false;
                                 break;
                             }
-                            temp.insert(*k);
+                            insert(temp, itemset_vec[k]);
                         }
                     }
-
                     if(to_gennerate){
-                        #pragma omp critical
                         {
-                            newCset.insert(itemset);
-                        }
-                        
+                            newCset.insert(itemset_vec);
+                        }   
                     }
                     itemset.erase(item);
                 }
@@ -209,11 +211,40 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     }
 
     for(auto i = newCset.begin(); i!=newCset.end();i++ ){
-        newC.count.insert(pair<set<int>,int>(*i,0));
+        newC.count.insert(pair<set<int>,int>(convertVectorToSet(*i),0));
     } 
     return newC;
 }
 
+void insert(vector<int> &vect, int value) {
+    vector<int>::iterator it = upper_bound(vect.begin(), vect.end(), value);
+    vect.insert(it, value);
+}
+set<int> convertVectorToSet(const vector<int> & vect){
+    set<int> result;
+    for(int i = 0; i<vect.size(); i++){
+        result.insert(vect[i]);
+    }
+    return result;
+}
+bool find (const vector<int> &vect, int value){
+    for(auto it= vect.begin(); it!=vect.end(); it++){
+        if(*it == value) return true;
+    }
+    return false;
+}
+bool find (const vector<vector<int>> &vect, vector<int> value){
+    for(auto i=0; i< vect.size(); i++){
+        if(vect[i].size()== value.size()){
+            bool isEqual = true;
+            for(int j=0 ; j< vect[i].size(); j++){
+                if(vect[i][j] != value[j] ) isEqual=false;
+            }
+            if(isEqual) return true;
+        }
+    }
+    return false;
+}
 bool Apriori::isSubSet(set<int> parent,set<int> child){
     for(set<int>::iterator it = child.begin(); it!= child.end();++it){
         if(parent.find(*it) == parent.end()){
