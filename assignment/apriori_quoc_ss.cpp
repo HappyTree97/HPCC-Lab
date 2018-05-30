@@ -180,8 +180,6 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     
 
     // #pragma omp parallel private(itemset,temp,to_gennerate,item) reduction(add: newCset)
-    
-    double t1 = omp_get_wtime();
     // int num_thread = omp_get_num_threads(); 
     // int thread_id = omp_get_thread_num();
     #pragma omp parallel for  private(itemset_vec, item, to_gennerate, temp )
@@ -189,17 +187,8 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
         itemset_vec = preLvec[i];
         for(int j = 0; j <list_item_vec.size(); ++j){
             item = list_item_vec[j];
-            if(!find(itemset_vec, item) ){
-                // if(i==1 && (j%5)==1){
-                //     for(int t =0; t< itemset_vec.size(); t++){
-                //         cout<< itemset_vec[t] << " ";
-                //     }
-                //     cout<<endl;
-                // }
-                
+            if(find(itemset_vec, item)==-1 ){
                 insert(itemset_vec, item);
-                
-                
                 to_gennerate = true;
                 if(newCset.count(itemset_vec)==0){
                     temp = itemset_vec;
@@ -221,7 +210,7 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
                         
                     }   
                 }
-                itemset.erase(item);
+                itemset_vec.erase(temp.begin()+find(itemset_vec,item) );
             }
         }
     }
@@ -236,6 +225,9 @@ void Apriori::insert(vector<int> &vect, int value) {
     vector<int>::iterator it = upper_bound(vect.begin(), vect.end(), value);
     vect.insert(it, value);
 }
+void Apriori::remove(vector<int> &vect, int value){
+
+}
 set<int> Apriori::convertVectorToSet(const vector<int> & vect){
     set<int> result;
     for(int i = 0; i<vect.size(); i++){
@@ -243,11 +235,12 @@ set<int> Apriori::convertVectorToSet(const vector<int> & vect){
     }
     return result;
 }
-bool Apriori::find (const vector<int> &vect, int value){
+int Apriori::find (const vector<int> &vect, int value){
     for(int i=0; i<vect.size(); i++){
-        if(vect[i] == value) return true;
+        if(vect[i] == value) return i;
+        
     }
-    return false;
+    return -1;
 }
 bool Apriori::find (const vector<vector<int>> &vect, vector<int> value){
     for(int i=0; i< vect.size(); i++){
