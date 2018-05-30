@@ -293,7 +293,7 @@ void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
     set<int> help_set;
 
     // when all transactions are in main memory.
-// #pragma omp parallel private(t_set, temp_set, to_count, help_set)
+#pragma omp parallel private(t_set, temp_set, to_count, help_set)
     {
         for (int i = 0; i < transactions.size(); i++)
         {
