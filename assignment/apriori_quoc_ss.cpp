@@ -184,7 +184,7 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     double t1 = omp_get_wtime();
     // int num_thread = omp_get_num_threads(); 
     // int thread_id = omp_get_thread_num();
-    #pragma omp parallel for  
+    #pragma omp parallel for  private(itemset_vec, item, to_gennerate, temp )
     for(int i=0; i<preLvec.size(); i++){
         itemset_vec = preLvec[i];
         for(int j = 0; j <list_item_vec.size(); ++j){
@@ -231,8 +231,8 @@ set<int> Apriori::convertVectorToSet(const vector<int> & vect){
     return result;
 }
 bool Apriori::find (const vector<int> &vect, int value){
-    for(auto it= vect.begin(); it!=vect.end(); it++){
-        if(*it == value) return true;
+    for(int i=0; i<vect.size(); i++){
+        if(vect[i] == value) return true;
     }
     return false;
 }
