@@ -181,11 +181,11 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     // int num_thread = omp_get_num_threads(); 
     // int thread_id = omp_get_thread_num();
     // #pragma omp parallel for private(itemset_vec, item, to_gennerate, temp )
-    cout<<preLvec.size()<<endl;
+    
     for(int i=0; i<preLvec.size(); i++){
         cout<<"Break Point 1\n";
+        cout<<preLvec.size()<<endl;
         vector<int> itemset_vec = preLvec[i];
-        cout<<"Break Point 2\n";
         for(int j = 0; j <list_item_vec.size(); ++j){
             // if(i==2){
             //     cout<<"Break Point 3\n";
@@ -220,6 +220,7 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
             }
         }
         cout<<"Break Point 3\n";
+        cout<<preLvec.size()<<endl;
     }
 
     for(auto i = newCset.begin(); i!=newCset.end();i++ ){
