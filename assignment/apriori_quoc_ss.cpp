@@ -189,6 +189,7 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
             // if(i==2){
             //     cout<<"Break Point 3\n";
             // }
+            cout<<"Break Point 3\n";
             item = list_item_vec[j];
             if(find(itemset_vec, item)==-1 ){
                 insert(itemset_vec, item);
@@ -213,6 +214,7 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
                         
                     }   
                 }
+                cout<<"Break Point 4\n";
                 int index =find(itemset_vec,item);
                 itemset_vec.erase(temp.begin() + index );
             }
