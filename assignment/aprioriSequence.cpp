@@ -387,8 +387,9 @@ void Apriori::generateRuleSubset(const set<int> &largeItemSet, int subsetSize, s
     // Sinh ra được một tổ hợp mới
     if (subsetSize == 0)
     {
+        
         int countSubsetItemset = listL[result.size() - 1].count[result];
-        double conf = countItemset / countSubsetItemset;
+        double conf = (double)countItemset / (double) countSubsetItemset;
         if (conf >= this->confidenceThreshold)
         {
             rule newRule;
@@ -397,15 +398,13 @@ void Apriori::generateRuleSubset(const set<int> &largeItemSet, int subsetSize, s
             {
                 if (newRule.left.find(*it) == newRule.left.end())
                 {
-                    newRule.right.insert(*it);
-                    
+                    newRule.right.insert(*it);   
                 }
             }
             this->rules.push_back(newRule);
         }
         return ;
     }
-    int countSubsetRule = 0;
     for (set<int>::iterator it = index; it != largeItemSet.end(); ++it)
     {
         result.insert(*it);
