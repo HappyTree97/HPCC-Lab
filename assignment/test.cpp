@@ -524,7 +524,7 @@ void print_strong_rules(){
     	for (auto it = l_temp.counter.begin(); it != l_temp.counter.end(); ++it){
 		    itemset=it->first;
 		    count_f=it->second;
-		    for(int j=1;j<itemset.size();j++){
+		    for(int j=1;j<itemset.size();j++){ 
 		    	
 		    	find_print_subset(itemset,itemset.size(),j,itemset.begin(),v,outfile,count_f);
 		    }
