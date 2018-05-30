@@ -362,7 +362,7 @@ void Apriori::doApriori()
         newC = generateCandidates(preL);
         keepFrequentCandidates(newC);
         preL = listL.back();
-        cout << "Execution time itemset " << countLargeset << " : " << omp_get_wtime() - t1;
+        cout << "Execution time itemset " << countLargeset << " : " << omp_get_wtime() - t1 <<endl;
     }
     listL.pop_back();
 }
@@ -452,7 +452,7 @@ void Apriori::exportSuportFile(string outputFileName)
 }
 int main(int argc, char **argv)
 {
-    clock_t t1, t2, t3, t4, t5;
+    double t1, t2, t3, t4, t5;
     string path = argv[1];
     double sp = atof(argv[2]);
     double cf = atof(argv[3]);
@@ -471,9 +471,9 @@ int main(int argc, char **argv)
 
     myAripori.exportSuportFile("suport.txt");
 
-    t4 = clock();
+    t4 = omp_get_wtime();
     myAripori.generateStrongRule();
-    t5 = clock();
+    t5 = omp_get_wtime();
     cout << "Number of strong rule : " << myAripori.getNumberStrongRule() << endl;
     cout << "Generate Rule time : " << t5 - t4 << endl;
 }
