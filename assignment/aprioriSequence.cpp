@@ -440,8 +440,8 @@ int main(int argc, char **argv)
     myAripori.generateStrongRule();
     t2 = clock();
 
-    double diff = ((double)t2 - (double)t1);
-    double seconds = diff / CLOCKS_PER_SEC;
+    diff = ((double)t2 - (double)t1);
+    seconds = diff / CLOCKS_PER_SEC;
     cout << "Strong rule generation time: ";
     cout << round(seconds);
     cout << " seconds" << endl;
