@@ -39,7 +39,7 @@ class Apriori {
         void keepFrequentCandidates(largeItemSet &C);
         void insert(vector<int> &vect, int value);
         set<int> convertVectorToSet(const vector<int> & vect);
-        bool find (const vector<int> &vect, int value);
+        int find (const vector<int> &vect, int value);
         bool find (const vector<vector<int>> &vect, vector<int> value);
     public:
         Apriori(double suportThreshold, double confidenceThreshold);
@@ -225,9 +225,7 @@ void Apriori::insert(vector<int> &vect, int value) {
     vector<int>::iterator it = upper_bound(vect.begin(), vect.end(), value);
     vect.insert(it, value);
 }
-void Apriori::remove(vector<int> &vect, int value){
 
-}
 set<int> Apriori::convertVectorToSet(const vector<int> & vect){
     set<int> result;
     for(int i = 0; i<vect.size(); i++){
