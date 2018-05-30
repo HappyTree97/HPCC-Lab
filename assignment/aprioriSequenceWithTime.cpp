@@ -286,47 +286,49 @@ void subset(set<int> &sset, int transactionSize, int subsetSize, set<int>::itera
 void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
 {
 
-    int temp_count;
     bool to_count;
 
     set<int> temp_set;
     set<int> t_set;
     set<int> help_set;
 
-    // when all transactions are in main memory.
-    for (int i = 0; i < transactions.size(); i++)
+// when all transactions are in main memory.
+#pragma omp parallel private(t_set, temp_set, to_count, help_set)
     {
-        t_set = transactions[i];
-
-        if (t_set.size() >= maybeC.size)
+        for (int i = 0; i < transactions.size(); i++)
         {
-            if (maybeC.count.size() < combinations(t_set.size(), maybeC.size))
+            t_set = transactions[i];
+
+            if (t_set.size() >= maybeC.size)
             {
-
-                for (auto it = maybeC.count.begin(); it != maybeC.count.end(); ++it)
+                if (maybeC.count.size() < combinations(t_set.size(), maybeC.size))
                 {
-                    temp_set = it->first;
 
-                    to_count = true;
-
-                    for (auto itt = temp_set.begin(); itt != temp_set.end(); ++itt)
+                    for (auto it = maybeC.count.begin(); it != maybeC.count.end(); ++it)
                     {
-                        if (t_set.count(*itt) == 0)
+                        temp_set = it->first;
+
+                        to_count = true;
+
+                        for (auto itt = temp_set.begin(); itt != temp_set.end(); ++itt)
                         {
-                            to_count = false;
-                            break;
+                            if (t_set.count(*itt) == 0)
+                            {
+                                to_count = false;
+                                break;
+                            }
+                        }
+
+                        if (to_count)
+                        {
+                            maybeC.count[temp_set] += 1;
                         }
                     }
-
-                    if (to_count)
-                    {
-                        maybeC.count[temp_set] += 1;
-                    }
                 }
-            }
-            else
-            {
-                subset(t_set, t_set.size(), maybeC.size, t_set.begin(), help_set, maybeC);
+                else
+                {
+                    subset(t_set, t_set.size(), maybeC.size, t_set.begin(), help_set, maybeC);
+                }
             }
         }
     }
