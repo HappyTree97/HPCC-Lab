@@ -180,7 +180,7 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     // int num_thread = omp_get_num_threads(); 
     // int thread_id = omp_get_thread_num();
     #pragma omp parallel for  
-    for(int i=thread_id; i<preLvec.size(); i+=num_thread){
+    for(int i=0; i<preLvec.size(); i++){
         itemset_vec = preLvec[i];
         for(int j = 0; j <list_item_vec.size(); ++j){
             item = list_item_vec[j];
