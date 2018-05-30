@@ -340,7 +340,7 @@ void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
     }
 
     maybeC.count.clear();
-
+    cout<< "large item set size : "<<l_new.size<<endl;
     listL.push_back(l_new);
 
     return;

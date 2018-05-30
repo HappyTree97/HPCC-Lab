@@ -414,6 +414,7 @@ int Apriori::generateRuleSubset(const set<int> &sset, int left_size, set<int>::i
 
 void Apriori::printListL()
 {
+    cout<< listL.size();
     for (int i = 0; i < listL.size(); i++)
     {
         cout << "L_" << listL[i].size << ": " << listL[i].count.size() << endl;
