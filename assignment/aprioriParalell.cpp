@@ -290,7 +290,7 @@ void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
     set<int> help_set;
 
 // when all transactions are in main memory.
-#pragma omp paralell 
+#pragma omp parallel 
     {
         int number_thread = omp_get_num_threads();
         int thread_id = omp_get_thread_num();
