@@ -49,6 +49,7 @@ class Apriori
     void generateStrongRule();
     void printListL();
     int getNumberStrongRule();
+    void exportSuportFile(string outputFileName);
 };
 
 Apriori::Apriori(double suportThreshold, double confidenceThreshold)
@@ -381,7 +382,7 @@ void Apriori::generateStrongRule()
     }
 }
 
-void Apriori::generateRuleSubset(const set<int> &sset, int subsetSize, set<int>::iterator index, set<int> &result, int countItemset)
+void Apriori::generateRuleSubset(const set<int> &largeItemSet, int subsetSize, set<int>::iterator index, set<int> &result, int countItemset)
 {
     // Sinh ra được một tổ hợp mới
     if (subsetSize == 0)
@@ -392,7 +393,7 @@ void Apriori::generateRuleSubset(const set<int> &sset, int subsetSize, set<int>:
         {
             rule newRule;
             newRule.left = result;
-            for (auto it = sset.begin(); it != sset.end(); it++)
+            for (auto it = largeItemSet.begin(); it != largeItemSet.end(); it++)
             {
                 if (newRule.left.find(*it) == newRule.left.end())
                 {
@@ -405,10 +406,10 @@ void Apriori::generateRuleSubset(const set<int> &sset, int subsetSize, set<int>:
         return ;
     }
     int countSubsetRule = 0;
-    for (set<int>::iterator it = index; it != sset.end(); ++it)
+    for (set<int>::iterator it = index; it != largeItemSet.end(); ++it)
     {
         result.insert(*it);
-        generateRuleSubset(sset, subsetSize - 1, ++index, result, countItemset);
+        generateRuleSubset(largeItemSet, subsetSize - 1, ++index, result, countItemset);
         result.erase(*it);
     }
     return ;
@@ -423,6 +424,26 @@ void Apriori::printListL()
 
 int Apriori::getNumberStrongRule(){
     return this->rules.size();
+}
+
+void Apriori::exportSuportFile(string outputFileName){
+    ofstream outfile;
+    outfile.open(outputFileName);
+    
+    for(auto it = this->listL.begin(); it != this->listL.end() ; it++)
+    {
+        for(auto it2 = it->count.begin(); it2 !=it->count.end(); it2++){
+            string line = "";
+            for(auto it3 = it2->first.begin(); it3 != it2->first.end(); it3++ ){
+                line += *it3 + " ";
+            }
+            line += it2->second;
+            outfile<< line <<endl;
+        }
+    }
+
+    outfile.close();
+    
 }
 int main(int argc, char **argv)
 {
@@ -443,11 +464,13 @@ int main(int argc, char **argv)
     cout << "Large Itemset generation time: ";
     cout << round(seconds);
     cout << " seconds" << endl;
+    myAripori.exportSuportFile("suport.txt");
+
 
     t1 = clock();
     myAripori.generateStrongRule();
     t2 = clock();
-    cout<< "Number of strong rule : "<< myAripori.getNumberStrongRule();
+    cout<< "Number of strong rule : "<< myAripori.getNumberStrongRule() <<endl;
     diff = ((double)t2 - (double)t1);
     seconds = diff / CLOCKS_PER_SEC;
     cout << "Strong rule generation time: ";
