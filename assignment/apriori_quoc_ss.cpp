@@ -175,39 +175,37 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     
 
     // #pragma omp parallel private(itemset,temp,to_gennerate,item) reduction(add: newCset)
-    #pragma omp parallel for 
-    {
-        double t1 = omp_get_wtime();
-        int num_thread = omp_get_num_threads(); 
-        int thread_id = omp_get_thread_num(); 
-        for(int i=thread_id; i<preLvec.size(); i+=num_thread){
-            itemset_vec = preLvec[i];
-            for(int j = 0; j <list_item_vec.size(); ++j){
-                item = list_item_vec[j];
-                if(!find(itemset_vec, item) ){
-                    insert(itemset_vec, item);
-                    to_gennerate = true;
-                    if(newCset.count(itemset_vec)==0){
-                        temp = itemset_vec;
-                        for(int k = 0; k != itemset_vec.size() ; ++k){
-                            temp.erase(temp.begin()+k);
-                            if(!find(preLvec, temp)){
-                                to_gennerate = false;
-                                break;
-                            }
-                            insert(temp, itemset_vec[k]);
+    
+    double t1 = omp_get_wtime();
+    // int num_thread = omp_get_num_threads(); 
+    // int thread_id = omp_get_thread_num();
+    #pragma omp parallel for  
+    for(int i=thread_id; i<preLvec.size(); i+=num_thread){
+        itemset_vec = preLvec[i];
+        for(int j = 0; j <list_item_vec.size(); ++j){
+            item = list_item_vec[j];
+            if(!find(itemset_vec, item) ){
+                insert(itemset_vec, item);
+                to_gennerate = true;
+                if(newCset.count(itemset_vec)==0){
+                    temp = itemset_vec;
+                    for(int k = 0; k != itemset_vec.size() ; ++k){
+                        temp.erase(temp.begin()+k);
+                        if(!find(preLvec, temp)){
+                            to_gennerate = false;
+                            break;
                         }
+                        insert(temp, itemset_vec[k]);
                     }
-                    if(to_gennerate){
-                        {
-                            newCset.insert(itemset_vec);
-                        }   
-                    }
-                    itemset.erase(item);
                 }
+                if(to_gennerate){
+                    {
+                        newCset.insert(itemset_vec);
+                    }   
+                }
+                itemset.erase(item);
             }
         }
-        // cout<< "Thread "<<omp_get_thread_num()<< "runing in : " << omp_get_wtime() - t1 << endl;
     }
 
     for(auto i = newCset.begin(); i!=newCset.end();i++ ){

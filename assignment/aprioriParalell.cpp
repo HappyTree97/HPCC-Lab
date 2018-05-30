@@ -294,7 +294,6 @@ void Apriori::keepFrequentCandidates(largeItemSet &maybeC)
     {
         int number_thread = omp_get_num_threads();
         int thread_id = omp_get_thread_num();
-        cout<< "Running in thread "<< thread_id << " th";
         for (int i = thread_id; i < transactions.size(); i+=number_thread)
         {
             t_set = transactions[i];
