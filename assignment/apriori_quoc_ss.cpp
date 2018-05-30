@@ -37,12 +37,17 @@ class Apriori {
         largeItemSet generateCandidates(largeItemSet &preL);
         bool isSubSet(set<int> parent,set<int> child);
         void keepFrequentCandidates(largeItemSet &C);
+        void insert(vector<int> &vect, int value);
+        set<int> convertVectorToSet(const vector<int> & vect);
+        bool find (const vector<int> &vect, int value);
+        bool find (const vector<vector<int>> &vect, vector<int> value);
     public:
         Apriori(double suportThreshold, double confidenceThreshold);
         void readFile(string path);
         void doApriori();
         void generateARule();
         void printListL();
+        
 };
 
 Apriori::Apriori(double suportThreshold, double confidenceThreshold)
@@ -214,24 +219,24 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
     return newC;
 }
 
-void insert(vector<int> &vect, int value) {
+void Apriori::insert(vector<int> &vect, int value) {
     vector<int>::iterator it = upper_bound(vect.begin(), vect.end(), value);
     vect.insert(it, value);
 }
-set<int> convertVectorToSet(const vector<int> & vect){
+set<int> Apriori::convertVectorToSet(const vector<int> & vect){
     set<int> result;
     for(int i = 0; i<vect.size(); i++){
         result.insert(vect[i]);
     }
     return result;
 }
-bool find (const vector<int> &vect, int value){
+bool Apriori::find (const vector<int> &vect, int value){
     for(auto it= vect.begin(); it!=vect.end(); it++){
         if(*it == value) return true;
     }
     return false;
 }
-bool find (const vector<vector<int>> &vect, vector<int> value){
+bool Apriori::find (const vector<vector<int>> &vect, vector<int> value){
     for(auto i=0; i< vect.size(); i++){
         if(vect[i].size()== value.size()){
             bool isEqual = true;
