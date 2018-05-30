@@ -412,7 +412,7 @@ void Apriori::printListL(){
     }
 }
 int main(int argc, char **argv){
-    clock_t t1,t2,t3;
+    double t1,t2,t3;
     string path = argv[1];
     double sp  = atof(argv[2]);
     double cf  = atof(argv[3]);
