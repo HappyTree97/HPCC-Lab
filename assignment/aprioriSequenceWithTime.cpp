@@ -451,23 +451,26 @@ void Apriori::exportSuportFile(string outputFileName){
 }
 int main(int argc, char **argv)
 {
-    clock_t t1, t2;
+    clock_t t1, t2, t3;
     string path = argv[1];
     double sp = atof(argv[2]);
     double cf = atof(argv[3]);
     Apriori myAripori(sp, cf);
+    t1 = omp_get_wtime();
     myAripori.readFile(path);
-    t1 = clock();
+
+
+    t2 = omp_get_wtime();
     myAripori.doApriori();
-    t2 = clock();
+    t3 = omp_get_wtime();
 
     myAripori.printListL();
 
-    double diff = ((double)t2 - (double)t1);
-    double seconds = diff / CLOCKS_PER_SEC;
-    cout << "Large Itemset generation time: ";
-    cout << round(seconds);
-    cout << " seconds" << endl;
+    
+    cout << "Readfile time : " << t2 - t1 <<endl;
+    cout << "doApriori time : " << t3 - t2 <<endl;
+
+    
     myAripori.exportSuportFile("suport.txt");
 
 
