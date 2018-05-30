@@ -210,7 +210,8 @@ largeItemSet Apriori::generateCandidates(largeItemSet &preL){
                         
                     }   
                 }
-                itemset_vec.erase(temp.begin()+find(itemset_vec,item) );
+                int index =find(itemset_vec,item);
+                itemset_vec.erase(temp.begin() + index );
             }
         }
     }
